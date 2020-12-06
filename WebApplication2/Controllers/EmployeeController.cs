@@ -17,7 +17,7 @@ namespace WebApplication2.Controllers
         public HttpResponseMessage Get() {
             string query = @"select EmployeeId, EmployeeName, Department,
             convert(varchar(10), DateOfJoining, 120) as DateOfJoining,
-            PhotoFilename
+            PhotoFileName
             from 
             dbo.Employee
             ";
@@ -37,7 +37,7 @@ namespace WebApplication2.Controllers
                 string query = @"
                 insert into dbo.Employee values
                 (
-                '" + emp.Employeename + @"',
+                '" + emp.EmployeeName + @"',
                 '" + emp.Department + @"',
                 '" + emp.DateOfJoining + @"',
                 '" + emp.PhotoFileName + @"'
@@ -64,28 +64,28 @@ namespace WebApplication2.Controllers
         public string Put(Employee emp) {
             try {
                 string query = @"
-                update dbo.Employee set
-                EmployeeName='"+ emp.Employeename +@"',
-                Department='"+ emp.Department +@"',
-                DateOfJoining='"+ emp.DateOfJoining +@"',
-                PhotoFileName='"+ emp.PhotoFileName +@"'
-                where EmployeeId=" + emp.EmpolyeeId+ @"
-
-                ";
+                    update dbo.Employee set 
+                    EmployeeName='" + emp.EmployeeName + @"'
+                    ,Department='" + emp.Department + @"'
+                    ,DateOfJoining='" + emp.DateOfJoining + @"'
+                    ,PhotoFileName='" + emp.PhotoFileName + @"'
+                    where EmployeeId=" + emp.EmployeeId + @"
+                                             
+                    ";
 
                 DataTable table = new DataTable();
-                using (var con = new SqlConnection(ConfigurationManager.ConnectionStrings["EmployeeAppDB"].ConnectionString))
+                using (var con = new SqlConnection(ConfigurationManager.
+                    ConnectionStrings["EmployeeAppDB"].ConnectionString))
                 using (var cmd = new SqlCommand(query, con))
                 using (var da = new SqlDataAdapter(cmd)) {
                     cmd.CommandType = CommandType.Text;
                     da.Fill(table);
                 }
 
-                return "Updated Succesfully !!!";
-
+                return "Updated Successfully!!";
             } catch (Exception) {
 
-                return "Failed to Update !!!";
+                return "Failed to Update!!";
             }
         }
 
@@ -136,6 +136,7 @@ namespace WebApplication2.Controllers
                 var httpRequest = HttpContext.Current.Request;
                 var postedFile = httpRequest.Files[0];
                 string filename = postedFile.FileName;
+                Console.WriteLine(filename);
                 var physicalPath = HttpContext.Current.Server.MapPath("~/Photos/" + filename);
 
                 postedFile.SaveAs(physicalPath);
